@@ -21,20 +21,20 @@ static std::list<int>::iterator iter;
 void *recv_fc(void *argumentPointer){
     int client_socket = *reinterpret_cast<int*>(argumentPointer);
     char buffer[BUFF_SIZE];
-    memset(buffer,0,sizeof(buffer));
-    size_t echoStringLen = strlen(buffer);
 
     while(true){
+        memset(buffer,0,sizeof(buffer));
         ssize_t numBytes = recv(client_socket, buffer, BUFF_SIZE, 0);
-        if(numBytes == -1){
-            printf("recv fail \n");
-            exit(0);
+        if(numBytes == -1 || numBytes == 0){
+            printf("=====client_socket %d down=====\n",client_socket);
+            //lt.erase(iter);
+            close(client_socket);
+            break;
         }
-        printf("%s \n" ,buffer);
+        printf("Client_socket %d : %s",client_socket ,buffer);
 
-        for(iter=lt.begin();iter !=lt.end();++iter)
-            send(client_socket,buffer, echoStringLen, 0);
-
+        for(iter=lt.begin();iter !=lt.end();iter++)
+            send(*iter, buffer, strlen(buffer), 0);
     }
 }
 
@@ -78,20 +78,19 @@ int main(int argc, char *argv[]){
     }
 
     printf("=====[PORT] : %d =====\n",atoi(argv[1]));
-    printf("Server : wating connection request.\n");
+    printf("=====Server : wating connection request.=====\n");
 
 
     while(true){
         lt.push_back(accept(server_socket, (struct sockaddr *)&client_addr, (socklen_t *)&len));
         client_socket = lt.back();
-        printf("client_socket check : %d \n", client_socket );
         if (lt.back() < 0){             // accept 기다리는 과정       accept(소켓, (sockaddr *)클라이언트의 주소를 저장할 구조체, 구조체의 크기)
             printf("Server: accept failed\n");
             exit(0);
         }
 
         inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, temp, sizeof(temp));
-        printf("Server: %s client connect,\n", temp);
+        printf("=====Server: %s client connect, socket %d=====\n", temp, client_socket);
 
         pthread_create(&recv_thread, nullptr, recv_fc, static_cast<void*>(&client_socket));
 

@@ -15,37 +15,38 @@
 void *send_fc(void *argumentPointer){
     int client_socket = *reinterpret_cast<int*>(argumentPointer);
     char message[BUFF_SIZE];
-    memset(message,0,sizeof(message));
 
     while(true){
-
+        memset(message,0,sizeof(message));
         printf("Client : ");
         fgets(message,BUFF_SIZE,stdin);
-        size_t echoStringLen = strlen(message);
 
-        ssize_t numBytes = send(client_socket,message, echoStringLen, 0);
+        ssize_t numBytes = send(client_socket, message, strlen(message), 0);
         if (numBytes == -1){
             printf("send() error");
+            close(client_socket);
             exit(1);
         }
-        if(strcmp(message,"quit\n") == 0) exit(1);
+        if(strcmp(message,"quit\n") == 0){
+            close(client_socket);
+            exit(1);
+        }
+        sleep(1);
     }
 }
 
 void *recv_fc(void *argumentPointer){
     int client_socket = *reinterpret_cast<int*>(argumentPointer);
     char buffer[BUFF_SIZE];                            //make message recv buffer
-    memset(buffer,0,sizeof(buffer));
 
     while(true){
+        memset(buffer,0,sizeof(buffer));
         ssize_t numBytes = recv(client_socket, buffer, BUFF_SIZE, 0);
-        if(numBytes == -1){
+        if(numBytes == -1 || numBytes == 0){
             printf("recv fail \n");
             exit(1);
         }
-        printf("%d bytes read \n", int(numBytes));
-        printf("%s \n",buffer);
-        if(strcmp(buffer,"quit\n") == 0) exit(1);
+        printf("echo_server : %s",buffer);
     }
 }
 
