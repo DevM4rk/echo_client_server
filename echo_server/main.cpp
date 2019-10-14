@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -17,6 +15,7 @@ using namespace std;
 
 static std::list<int> lt;
 static std::list<int>::iterator iter;
+static char option[2] = { 0, };
 
 void *recv_fc(void *argumentPointer){
     int client_socket = *reinterpret_cast<int*>(argumentPointer);
@@ -33,8 +32,13 @@ void *recv_fc(void *argumentPointer){
         }
         printf("Client_socket %d : %s",client_socket ,buffer);
 
-        for(iter=lt.begin();iter !=lt.end();iter++)
-            send(*iter, buffer, strlen(buffer), 0);
+        if( !memcmp(option,"-b",2)){
+            for(iter=lt.begin();iter !=lt.end();iter++)
+                send(*iter, buffer, strlen(buffer), 0);
+        }
+        else{
+            send(client_socket, buffer, strlen(buffer), 0);
+        }
     }
 }
 
@@ -44,10 +48,13 @@ void usage() {
 }
 
 int main(int argc, char *argv[]){
-    if(argc != 2){
+    if(argc < 2 || argc > 3){
         usage();
         return -1;
     }
+    if(argc == 2){}
+    else if(!memcmp(argv[2],"-b",3))
+        memcpy(option,argv[2],2);
 
     struct sockaddr_in server_addr, client_addr;
     int server_socket, client_socket;                               //fd = socket
@@ -97,5 +104,6 @@ int main(int argc, char *argv[]){
         //pthread_join(recv_thread, nullptr);
     }
 
+    close(server_socket);
     return 0;
 }

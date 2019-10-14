@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -46,7 +44,7 @@ void *recv_fc(void *argumentPointer){
             printf("recv fail \n");
             exit(1);
         }
-        printf("echo_server : %s",buffer);
+        printf("\necho_server : %s",buffer);
     }
 }
 

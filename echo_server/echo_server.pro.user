@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.9.0, 2019-10-14T13:12:29. -->
+<!-- Written by QtCreator 4.9.0, 2019-10-14T14:11:10. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -306,7 +306,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">echo_server</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/root/qt/echo_client_server/echo_server/echo_server.pro</value>
-    <value type="QString" key="RunConfiguration.Arguments">4552</value>
+    <value type="QString" key="RunConfiguration.Arguments">4552 -b</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
